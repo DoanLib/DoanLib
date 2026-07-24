@@ -95,8 +95,9 @@ typedef double f64;
   // Evaluates the expression and triggers fatal error if it fails.
   #define DN_ASSERT(expression) DN_ASSERT_IMPLEMENTATION(expression, #expression)
 
-  // Assertion macro that is always evaluated, even when assertions are disabled.
-  // Triggers a fatal error if it fails, but only when assertions are enabled.
+  // Assertion macro that is always evaluated, even when assertions are
+  // disabled. Triggers a fatal error if it fails, but only when assertions are
+  // enabled.
   #define DN_ASSERT_EVALUATE(expression) DN_ASSERT_IMPLEMENTATION(expression, #expression)
 #else
   #define DN_ASSERT(expression)

@@ -116,7 +116,8 @@ typedef struct DnVec2u {
   };
 } DnVec2u;
 
-// Struct representing three-dimensional vectors with unsigned integer components.
+// Struct representing three-dimensional vectors with unsigned integer
+// components.
 typedef struct DnVec3u {
   union {
     struct {
@@ -129,7 +130,8 @@ typedef struct DnVec3u {
   };
 } DnVec3u;
 
-// Struct representing four-dimensional vectors with unsigned integer components.
+// Struct representing four-dimensional vectors with unsigned integer
+// components.
 typedef struct DnVec4u {
   union {
     struct {
@@ -148,7 +150,6 @@ typedef struct DnVec4u {
 // Struct representing colors with four byte components.
 typedef struct DnColor {
   union {
-
     u8 c[4];
 
     struct {
