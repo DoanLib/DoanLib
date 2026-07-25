@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dn/structs.h"
+#include "string.h"
 
 // == APPLICATION =========================================================== //
 

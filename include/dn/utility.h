@@ -1,7 +1,7 @@
 #pragma once
 
 #include "shared.h"
-#include "structs.h"
+#include "string.h"
 
 // == FILE UTILITY ========================================================== //
 
