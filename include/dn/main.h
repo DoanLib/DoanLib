@@ -8,6 +8,7 @@ typedef enum DnExitCode : int {
   DnExitCode_UnknownFailure = 1,
   DnExitCode_LibInitFailure = 2,
   DnExitCode_AppInitFailure = 3,
+  DnExitCode_TestFailure = 4,
 } DnExitCode;
 
 // == MAIN ENTRY =========================================================== //

@@ -5,13 +5,19 @@ extern bool DnTest_Memory();
 extern bool DnTest_Utility();
 
 DN_DEFINE_MAIN_ENTRY() {
+  bool success = true;
+
   if (!DnTest_Memory()) {
-    return 1;
+    success = false;
   }
 
   if (!DnTest_Utility()) {
-    return 1;
+    success = false;
   }
 
-  return 0;
+  if (!success) {
+    return DnExitCode_TestFailure;
+  }
+
+  return DnExitCode_Success;
 }
