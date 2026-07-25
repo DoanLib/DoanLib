@@ -36,6 +36,9 @@ DnStrView DnStrView_FromCStrLength(const char* string, u64 length);
 // Checks whether string view is empty.
 bool DnStrView_IsEmpty(DnStrView view);
 
-// Converts string view to a null-terminated C string. This might require
-// allocating memory in order to terminate the string.
+// Converts string view to a null-terminated C string. This will always allocate
+// memory for returned result, so it must be freed by the caller, even if the
+// string view is empty or already null terminated. This is done to avoid
+// ambiguitiy regarding onwnership of the returned memory. Use temporary
+// allocator when possible to make temporary conversions to C string fast.
 const char* DnStrView_AsCStr(const DnMemAllocator* allocator, DnStrView view);
