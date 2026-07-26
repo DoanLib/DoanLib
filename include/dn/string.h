@@ -52,8 +52,8 @@ void DnStr_RangeToIndices(i64* i, i64* j, u64 length);
 
 // == STRING VIEW STRUCT ==================================================== //
 
-// String view struct represented as pointer to memory (which is not required to
-// be null terminated) and length integer.
+// Immutable string view struct represented as pointer to memory (which is not
+// required to be null terminated) and length integer.
 typedef struct DnStrView {
   const char* data;
   u64 length;
@@ -73,9 +73,49 @@ bool DnStrView_IsEmpty(DnStrView view);
 // string view is empty or already null terminated. This is done to avoid
 // ambiguitiy regarding onwnership of the returned memory. Use temporary
 // allocator when possible to make temporary conversions to C string fast.
-const char* DnStrView_AsCStr(const DnMemAllocator* allocator, DnStrView view);
+const char* DnStrView_ToCStr(const DnMemAllocator* allocator, DnStrView view);
 
 // == STRING VIEW FUNCTIONS ================================================= //
 
 // Returns substring of a string view.
 DnStrView DnStrView_SubStr(DnStrView view, i64 i, i64 j);
+
+// == STRING STRUCT ========================================================= //
+
+// Mutable string struct with resizable memory buffer that is always
+// null-terminated.
+typedef struct DnStr {
+  char* data;
+  u64 capacity;
+  u64 length;
+} DnStr;
+
+// Creates an empty string with specified capacity.
+DnStr DnStr_Create(const DnMemAllocator* allocator, u64 capacity);
+
+// Creates a string copy from another string.
+DnStr DnStr_Clone(const DnMemAllocator* allocator, DnStr other);
+
+// Creates a string copy from a string view.
+DnStr DnStr_FromView(const DnMemAllocator* allocator, DnStrView view);
+
+// Creates a string copy from a null-terminated C string.
+DnStr DnStr_FromCStr(const DnMemAllocator* allocator, const char* string);
+
+// Creates a string from memory and known length.
+DnStr DnStr_FromCStrLength(const DnMemAllocator* allocator, const char* string, u64 length);
+
+// Checks whether string is empty.
+bool DnStr_IsEmpty(DnStr string);
+
+// Returns string view of a string.
+DnStrView DnStr_AsView(DnStr string);
+
+// Returns null-terminated character buffer of a string. This function does not
+// allocate since string buffer is internally always null-terminated.
+const char* DnStr_AsCStr(DnStr string);
+
+// == STRING FUNCTIONS ====================================================== //
+
+// Appends string view to a string.
+void DnStr_Append(DnStr* string, DnStrView view);

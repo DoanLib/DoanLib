@@ -206,7 +206,7 @@ void DnSysWindow_SetTitle(DnSysWindow* window, DnStrView title) {
   DN_ASSERT(window->handle);
 
   DnMemTempScope memTempScope = DnMemTemp_PushScope();
-  const char* titleStr = DnStrView_AsCStr(DnMemTemp_GetAllocator(), title);
+  const char* titleStr = DnStrView_ToCStr(DnMemTemp_GetAllocator(), title);
   SetWindowText(window->handle, titleStr);
   DnMemTemp_PopScope(&memTempScope);
 }

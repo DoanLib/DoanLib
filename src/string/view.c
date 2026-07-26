@@ -28,7 +28,7 @@ bool DnStrView_IsEmpty(DnStrView view) {
   return view.data == nullptr || view.length == 0;
 }
 
-const char* DnStrView_AsCStr(const DnMemAllocator* allocator, DnStrView view) {
+const char* DnStrView_ToCStr(const DnMemAllocator* allocator, DnStrView view) {
   DN_ASSERT(allocator != nullptr);
   DN_ASSERT(DnStrView_IsValid(view));
 
