@@ -64,5 +64,8 @@ bool DnStrView_Compare(DnStrView first, DnStrView second) {
   if (first.length != second.length)
     return false;
 
+  if (first.data[0] != second.data[0])
+    return false;
+
   return memcmp(first.data, second.data, second.length) == 0;
 }
