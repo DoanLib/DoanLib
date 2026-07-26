@@ -95,6 +95,9 @@ bool DnStrView_IsValid(DnStrView view);
 // Returns substring of a string view.
 DnStrView DnStrView_SubStr(DnStrView view, i64 i, i64 j);
 
+// Compares two string views.
+bool DnStrView_Compare(DnStrView first, DnStrView second);
+
 // == STRING STRUCT ========================================================= //
 
 // Mutable string struct with resizable memory buffer that is always

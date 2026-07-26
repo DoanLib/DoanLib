@@ -56,3 +56,13 @@ DnStrView DnStrView_SubStr(DnStrView view, i64 i, i64 j) {
     .length = (u64)(j - i),
   };
 }
+
+bool DnStrView_Compare(DnStrView first, DnStrView second) {
+  DN_ASSERT(DnStrView_IsValid(first));
+  DN_ASSERT(DnStrView_IsValid(second));
+
+  if (first.length != second.length)
+    return false;
+
+  return memcmp(first.data, second.data, second.length) == 0;
+}
