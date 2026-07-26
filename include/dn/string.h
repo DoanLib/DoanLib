@@ -32,8 +32,14 @@
 // Converts a string position to zero-based index.
 void DnStr_PositionToIndex(i64* i, u64 length);
 
+// Converts a string zero-based index to position.
+void DnStr_IndexToPosition(i64* i);
+
 // Converts a string range to zero-based indices.
 void DnStr_RangeToIndices(i64* i, i64* j, u64 length);
+
+// Returns length of a string range.
+u64 DnStr_RangeLength(i64 i, i64 j, u64 length);
 
 // == STRING MACROS ========================================================= //
 
@@ -79,7 +85,7 @@ const char* DnStrView_ToCStr(const DnMemAllocator* allocator, DnStrView view);
 
 #if DN_ASSERT_ENABLED
 
-// Checks whether string is valid. Used to debug assertions.
+// Checks whether string is valid. Used for debug assertions.
 bool DnStrView_IsValid(DnStrView view);
 
 #endif // DN_ASSERT_ENABLED
@@ -144,9 +150,9 @@ void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view
 // DnStr_Destroy() to free memory.
 DnStr DnStr_Concat(const DnMemAllocator* allocator, ...); 
 
-// Reverses a string in place.
-void DnStr_Reverse(DnStr* string);
-
 // Create a reversed string from string view. Must be destroyed with
 // DnStr_Destroy() to free memory.
 DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view);
+
+// Reverses a string in place.
+void DnStr_Reverse(DnStr* string);

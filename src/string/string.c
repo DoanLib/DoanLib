@@ -10,6 +10,12 @@ void DnStr_PositionToIndex(i64* i, u64 length) {
   DN_ASSERT(*i >= 0 && *i <= (i64)length);
 }
 
+void DnStr_IndexToPosition(i64* i) {
+  DN_ASSERT(i != nullptr);
+  DN_ASSERT(*i <= INT64_MAX);
+  *i = *i + 1;
+}
+
 void DnStr_RangeToIndices(i64* i, i64* j, u64 length) {
   DnStr_PositionToIndex(i, length);
   DnStr_PositionToIndex(j, length);
@@ -17,6 +23,11 @@ void DnStr_RangeToIndices(i64* i, i64* j, u64 length) {
   if (*i > *j) {
     DN_SWAP(*i, *j);
   }
+}
+
+u64 DnStr_RangeLength(i64 i, i64 j, u64 length) {
+  DnStr_RangeToIndices(&i, &j, length);
+  return (u64)(j - i);
 }
 
 // == STRING STRUCT ========================================================= //
@@ -174,14 +185,6 @@ DnStr DnStr_Concat(const DnMemAllocator* allocator, ...) {
   return result;
 }
 
-void DnStr_Reverse(DnStr* string) {
-  DN_ASSERT(string != nullptr);
-
-  for (u64 i = 0; i < string->length / 2; i++) {
-    DN_SWAP(string->data[i], string->data[string->length - 1 - i]);
-  }
-}
-
 DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view) {
   DnStr result = DnStr_Create(allocator, view.length);
   for (u64 i = 0; i < view.length; i++) {
@@ -191,4 +194,12 @@ DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view) {
   result.length = view.length;
 
   return result;
+}
+
+void DnStr_Reverse(DnStr* string) {
+  DN_ASSERT(string != nullptr);
+
+  for (u64 i = 0; i < string->length / 2; i++) {
+    DN_SWAP(string->data[i], string->data[string->length - 1 - i]);
+  }
 }
