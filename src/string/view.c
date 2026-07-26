@@ -4,9 +4,13 @@
 
 // == STRING VIEW STRUCT ==================================================== //
 
+#if DN_ASSERT_ENABLED
+
 static bool DnStrView_IsValid(DnStrView view) {
   return view.data || view.length == 0;
 }
+
+#endif // DN_ASSERT_ENABLED
 
 DnStrView DnStrView_FromCStr(const char* string) {
   return (DnStrView) {

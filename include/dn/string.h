@@ -44,9 +44,13 @@ void DnStr_RangeToIndices(i64* i, i64* j, u64 length);
 // String view arguments for printf format.
 #define DN_STR_VIEW_ARG(view) (view.length), (view.data)
 
-// Macros for creating string view from literal. Avoids calling strlen() by
-// deducing length at compile time.
-#define DN_STR_VIEW_LITERAL(text) ((DnStrView) { .data = text, .length = sizeof(text) - 1 })
+// Creating string view from literal. Avoids calling strlen() by deducing length
+// at compile time.
+#define DN_STR_VIEW_LITERAL(text) DnStrView_FromCStrLength(text, sizeof(text) - 1)
+
+// Creating string from literal. Avoids calling strlen() by deducing length at
+// compile time. Must be destroyed with DnStr_Destroy() to free memory.
+#define DN_STR_LITERAL(allocator, text) DnStr_FromCStrLength(allocator, text, sizeof(text) - 1)
 
 // == STRING VIEW STRUCT ==================================================== //
 
@@ -89,18 +93,26 @@ typedef struct DnStr {
 } DnStr;
 
 // Creates an empty string with specified capacity.
+// Must be destroyed with DnStr_Destroy() to free memory.
 DnStr DnStr_Create(const DnMemAllocator* allocator, u64 capacity);
 
+// Destroys a string and frees its memory.
+void DnStr_Destroy(const DnMemAllocator* allocator, DnStr* string);
+
 // Creates a string copy from another string.
+// Must be destroyed with DnStr_Destroy() to free memory.
 DnStr DnStr_Clone(const DnMemAllocator* allocator, DnStr other);
 
 // Creates a string copy from a string view.
+// Must be destroyed with DnStr_Destroy() to free memory.
 DnStr DnStr_FromView(const DnMemAllocator* allocator, DnStrView view);
 
 // Creates a string copy from a null-terminated C string.
+// Must be destroyed with DnStr_Destroy() to free memory.
 DnStr DnStr_FromCStr(const DnMemAllocator* allocator, const char* string);
 
 // Creates a string from memory and known length.
+// Must be destroyed with DnStr_Destroy() to free memory.
 DnStr DnStr_FromCStrLength(const DnMemAllocator* allocator, const char* string, u64 length);
 
 // Checks whether string is empty.
@@ -115,5 +127,8 @@ const char* DnStr_AsCStr(DnStr string);
 
 // == STRING FUNCTIONS ====================================================== //
 
+// Ensures string capacity for specified length.
+void DnStr_EnsureCapacity(const DnMemAllocator* allocator, DnStr* string, u64 length);
+
 // Appends string view to a string.
-void DnStr_Append(DnStr* string, DnStrView view);
+void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view);
