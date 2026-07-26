@@ -133,6 +133,10 @@ void DnStr_EnsureCapacity(const DnMemAllocator* allocator, DnStr* string, u64 le
 // Appends string view to a string.
 void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view);
 
+// Concatenates multiple string views into a new string. Must be destroyed with
+// DnStr_Destroy() to free memory.
+DnStr DnStr_Concat(const DnMemAllocator* allocator, ...); 
+
 // Reverses a string in place.
 void DnStr_Reverse(DnStr* string);
 

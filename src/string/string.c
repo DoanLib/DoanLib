@@ -139,6 +139,40 @@ void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view
   string->length = newLength;
 }
 
+DnStr DnStr_Concat(const DnMemAllocator* allocator, ...) {
+  u64 length = 0;
+
+  va_list args;
+  va_start(args, allocator);
+  while (true) {
+    DnStrView view = va_arg(args, DnStrView);
+    if (view.data == nullptr) {
+      break;
+    }
+
+    length += view.length;
+  }
+  va_end(args);
+
+  DnStr result = DnStr_Create(allocator, length);
+
+  va_start(args, allocator);
+  while (true) {
+    DnStrView view = va_arg(args, DnStrView);
+    if (view.data == nullptr) {
+      break;
+    }
+
+    memcpy(result.data + result.length, view.data, view.length);
+    result.length += view.length;
+  }
+  DN_ASSERT(result.length == length);
+  result.data[result.length] = '\0';
+  va_end(args);
+
+  return result;
+}
+
 void DnStr_Reverse(DnStr* string) {
   DN_ASSERT(string != nullptr);
 
