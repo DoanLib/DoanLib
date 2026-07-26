@@ -53,7 +53,7 @@ typedef double f64;
 
 // Swaps the values of two variables of the same type.
 #define DN_SWAP(a, b) ({ \
-    typeof(a) _temp = a; \
+    auto _temp = a; \
     a = b; \
     b = _temp; \
   })
