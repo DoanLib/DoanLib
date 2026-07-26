@@ -2,7 +2,7 @@
 #include "dn/memory.h"
 #include <string.h>
 
-// == STRING VIEW FUNCTIONS ================================================= //
+// == STRING VIEW =========================================================== //
 
 DnStrView DnStrView_FromCStr(const char* string) {
   return (DnStrView) {
