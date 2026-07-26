@@ -49,6 +49,6 @@ DnStrView DnStrView_SubStr(DnStrView view, i64 i, i64 j) {
 
   return (DnStrView) {
     .data = view.data + i,
-    .length = (u64)j - (u64)i,
+    .length = (u64)(j - i),
   };
 }
