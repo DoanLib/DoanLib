@@ -50,7 +50,7 @@ void DnStr_RangeToIndices(i64* i, i64* j, u64 length);
 // deducing length at compile time.
 #define DN_STR_VIEW_LITERAL(text) ((DnStrView) { .data = text, .length = sizeof(text) - 1 })
 
-// == STRING VIEW =========================================================== //
+// == STRING VIEW STRUCT ==================================================== //
 
 // String view struct represented as pointer to memory (which is not required to
 // be null terminated) and length integer.
@@ -74,3 +74,8 @@ bool DnStrView_IsEmpty(DnStrView view);
 // ambiguitiy regarding onwnership of the returned memory. Use temporary
 // allocator when possible to make temporary conversions to C string fast.
 const char* DnStrView_AsCStr(const DnMemAllocator* allocator, DnStrView view);
+
+// == STRING VIEW FUNCTIONS ================================================= //
+
+// Returns substring of a string view.
+DnStrView DnStrView_SubStr(DnStrView view, i64 i, i64 j);
