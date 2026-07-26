@@ -42,16 +42,16 @@ void DnStr_Destroy(const DnMemAllocator* allocator, DnStr* string) {
   DN_MEM_FREE(allocator, string->data);
 }
 
-DnStr DnStr_Clone(const DnMemAllocator* allocator, DnStr other) {
+DnStr DnStr_Clone(const DnMemAllocator* allocator, DnStr string) {
   DN_ASSERT(allocator != nullptr);
 
-  char* data = DN_MEM_ALLOC_TYPES(allocator, char, other.length + 1);
-  memcpy(data, other.data, other.length + 1);
+  char* data = DN_MEM_ALLOC_TYPES(allocator, char, string.length + 1);
+  memcpy(data, string.data, string.length + 1);
 
   return (DnStr) {
     .data = data,
-    .capacity = other.length + 1,
-    .length = other.length
+    .capacity = string.length + 1,
+    .length = string.length
   };
 }
 
@@ -137,4 +137,12 @@ void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view
   memcpy(string->data + string->length, view.data, view.length);
   string->data[newLength] = '\0'; 
   string->length = newLength;
+}
+
+void DnStr_Reverse(DnStr* string) {
+  DN_ASSERT(string != nullptr);
+
+  for (u64 i = 0; i < string->length / 2; i++) {
+    DN_SWAP(string->data[i], string->data[string->length - 1 - i]);
+  }
 }

@@ -101,7 +101,7 @@ void DnStr_Destroy(const DnMemAllocator* allocator, DnStr* string);
 
 // Creates a string copy from another string.
 // Must be destroyed with DnStr_Destroy() to free memory.
-DnStr DnStr_Clone(const DnMemAllocator* allocator, DnStr other);
+DnStr DnStr_Clone(const DnMemAllocator* allocator, DnStr string);
 
 // Creates a string copy from a string view.
 // Must be destroyed with DnStr_Destroy() to free memory.
@@ -132,3 +132,6 @@ void DnStr_EnsureCapacity(const DnMemAllocator* allocator, DnStr* string, u64 le
 
 // Appends string view to a string.
 void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view);
+
+// Reverses a string in place.
+void DnStr_Reverse(DnStr* string);
