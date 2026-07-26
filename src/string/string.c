@@ -146,3 +146,14 @@ void DnStr_Reverse(DnStr* string) {
     DN_SWAP(string->data[i], string->data[string->length - 1 - i]);
   }
 }
+
+DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view) {
+  DnStr result = DnStr_Create(allocator, view.length);
+  for (u64 i = 0; i < view.length; i++) {
+    result.data[i] = view.data[view.length - 1 - i];
+  }
+  result.data[view.length] = '\0';
+  result.length = view.length;
+
+  return result;
+}

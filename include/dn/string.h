@@ -135,3 +135,7 @@ void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view
 
 // Reverses a string in place.
 void DnStr_Reverse(DnStr* string);
+
+// Create a reversed string from string view. Must be destroyed with
+// DnStr_Destroy() to free memory.
+DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view);
