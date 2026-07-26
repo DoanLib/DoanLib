@@ -25,11 +25,6 @@ void DnStr_RangeToIndices(i64* i, i64* j, u64 length) {
   }
 }
 
-u64 DnStr_RangeLength(i64 i, i64 j, u64 length) {
-  DnStr_RangeToIndices(&i, &j, length);
-  return (u64)(j - i);
-}
-
 // == STRING STRUCT ========================================================= //
 
 DnStr DnStr_Create(const DnMemAllocator* allocator, u64 capacity) {

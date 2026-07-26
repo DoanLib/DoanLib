@@ -38,9 +38,6 @@ void DnStr_IndexToPosition(i64* i);
 // Converts a string range to zero-based indices.
 void DnStr_RangeToIndices(i64* i, i64* j, u64 length);
 
-// Returns length of a string range.
-u64 DnStr_RangeLength(i64 i, i64 j, u64 length);
-
 // == STRING MACROS ========================================================= //
 
 // Printf format string for string view and its size.
