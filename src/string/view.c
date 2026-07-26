@@ -4,14 +4,6 @@
 
 // == STRING VIEW STRUCT ==================================================== //
 
-#if DN_ASSERT_ENABLED
-
-static bool DnStrView_IsValid(DnStrView view) {
-  return view.data || view.length == 0;
-}
-
-#endif // DN_ASSERT_ENABLED
-
 DnStrView DnStrView_FromCStr(const char* string) {
   return (DnStrView) {
     .data = string,
@@ -44,6 +36,14 @@ const char* DnStrView_ToCStr(const DnMemAllocator* allocator, DnStrView view) {
   result[view.length] = '\0';
   return result;
 }
+
+#if DN_ASSERT_ENABLED
+
+bool DnStrView_IsValid(DnStrView view) {
+  return view.data || view.length == 0;
+}
+
+#endif // DN_ASSERT_ENABLED
 
 // == STRING VIEW FUNCTIONS ================================================= //
 

@@ -150,6 +150,7 @@ DnStr DnStr_Concat(const DnMemAllocator* allocator, ...) {
       break;
     }
 
+    DN_ASSERT(DnStrView_IsValid(view));
     length += view.length;
   }
   va_end(args);

@@ -77,6 +77,13 @@ bool DnStrView_IsEmpty(DnStrView view);
 // allocator when possible to make temporary conversions to C string fast.
 const char* DnStrView_ToCStr(const DnMemAllocator* allocator, DnStrView view);
 
+#if DN_ASSERT_ENABLED
+
+// Checks whether string is valid. Used to debug assertions.
+bool DnStrView_IsValid(DnStrView view);
+
+#endif // DN_ASSERT_ENABLED
+
 // == STRING VIEW FUNCTIONS ================================================= //
 
 // Returns substring of a string view.
