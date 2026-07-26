@@ -191,10 +191,14 @@ DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view) {
   return result;
 }
 
-void DnStr_Reverse(DnStr* string) {
+void DnStr_Reverse(DnStr* string, i64 i, i64 j) {
   DN_ASSERT(string != nullptr);
 
-  for (u64 i = 0; i < string->length / 2; i++) {
-    DN_SWAP(string->data[i], string->data[string->length - 1 - i]);
+  DnStr_RangeToIndices(&i, &j, string->length);
+  char* data = string->data + i;
+  u64 length = (u64)(j - i);
+
+  for (u64 i = 0; i < length / 2; i++) {
+    DN_SWAP(data[i], data[length - 1 - i]);
   }
 }

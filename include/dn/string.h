@@ -152,4 +152,4 @@ DnStr DnStr_Concat(const DnMemAllocator* allocator, ...);
 DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view);
 
 // Reverses a string in place.
-void DnStr_Reverse(DnStr* string);
+void DnStr_Reverse(DnStr* string, i64 i, i64 j);
