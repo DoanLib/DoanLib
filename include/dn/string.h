@@ -6,10 +6,9 @@
 // == STRING INDEXING ======================================================= //
 
 // Most string functions accept and return positional integerts of characters
-// that can be positive numbers from 1 to length, or negative numbers from
-// -length to -1, where zero and length+1 both indicate end position past the
-// last character. This can be visualized below for a string of 7 length
-// (excluding null):
+// that can be positive range between 1:length, or negative range between
+// -length:-1, where zero and length+1 both indicate end position past the last
+// character. This can be visualized below for a string of 7 length:
 // +-----+----+----+----+----+----+----+----+----+
 // | pos | +1 | +2 | +3 | +4 | +5 | +6 | +7 | +8 |
 // +-----+----+----+----+----+----+----+----+----+
@@ -17,15 +16,14 @@
 // +-----+----+----+----+----+----+----+----+----+
 // | neg | -7 | -6 | -5 | -4 | -3 | -2 | -1 |  0 |
 // +-----+----+----+----+----+----+----+----+----+
-// This might feel a bit confusing at first compared to the more common
-// zero-based indexing, but it is a more natural way of representing string
-// ranges that can start from the beginning or the end of a string (which
-// zero-based indexing is awkward at due to zero having only one meaning for the
-// first character). Here zero intuitivently always represents the end of the
-// string. This allows ranges to be specified without need to know string length
-// in advance (e.g. entire string is always denoted by 1:0 range). Below calls
-// will produce identical results for the same
-// string (returning "Lib"):
+// This might feel a bit awkward at first compared to zero-based indexing, but
+// it is a more natural way of representing string ranges relative to the
+// beginning or the end of a string (where for zero-based indexing zero has only
+// one meaning for the first character). Here zero intuitively always represents
+// the end of the string, which ranges to be specified without need to know
+// string length in advance (e.g. entire string is always denoted by 1:0 range).
+// Below calls will produce identical results for the same string (returning
+// "Lib"):
 // DnStrView_Substr("DoanLib", 5, 8);
 // DnStrView_Substr("DoanLib", 5, 0);
 // DnStrView_Substr("DoanLib", -3, 8);
