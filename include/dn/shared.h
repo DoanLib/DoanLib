@@ -137,6 +137,9 @@ typedef struct DnRange {
 // Utility macro for shorter range struct creation.
 #define DN_RANGE(start, end) (DnRange){ .start = start, .end = end }
 
+// Utility macro for specifying full range.
+#define DN_RANGE_ALL DN_RANGE(1, 0)
+
 // Converts position to zero-based index.
 void DnRange_ToIndex(i64* i, u64 length);
 
