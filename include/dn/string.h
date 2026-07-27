@@ -106,14 +106,6 @@ i64 DnStrView_Find(DnStrView view, DnStrView occurrence);
 // positive integer for position if found, zero if not found.
 i64 DnStrView_FindReverse(DnStrView view, DnStrView occurrence);
 
-// Finds the first occurence of any character. Returns positive integer for
-// position if found, zero if not found.
-i64 DnStrView_FindChar(DnStrView view, DnStrView characters);
-
-// Find the last occurence of any character. Returns positive integer for
-// position if found, zero if not found.
-i64 DnStrView_FindCharReverse(DnStrView view, DnStrView characters);
-
 // == STRING STRUCT ========================================================= //
 
 // Mutable string struct with resizable memory buffer that is always
