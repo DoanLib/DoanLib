@@ -178,3 +178,20 @@ void DnStr_Reverse(DnStr* string, DnRange range) {
     DN_SWAP(data[i], data[length - 1 - i]);
   }
 }
+
+void DnStr_Map(DnStr* string, DnRange range, DnStrView from, DnStrView to) {
+  DN_ASSERT(string != nullptr);
+  DN_ASSERT(DnStrView_IsValid(from));
+  DN_ASSERT(DnStrView_IsValid(to));
+  DN_ASSERT(from.length == to.length);
+
+  DnRange_ToIndices(&range, string->length);
+  for (i64 i = range.start; i < range.end; ++i) {
+    char* character = &string->data[i];
+    for (i64 c = 0; c < (i64)from.length; ++c) {
+      if (*character == from.data[c]) {
+        *character = to.data[c];
+      }
+    }
+  }
+}

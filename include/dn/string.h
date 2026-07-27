@@ -129,3 +129,7 @@ DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view);
 
 // Reverses a string in place.
 void DnStr_Reverse(DnStr* string, DnRange range);
+
+// Maps characters of a string from to a set of new characters. From and to
+// character set arguments must be of the exact same size.
+void DnStr_Map(DnStr* string, DnRange range, DnStrView from, DnStrView to);
