@@ -129,14 +129,6 @@ void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view
 // destroyed with DnStr_Destroy() to free memory.
 void DnStr_Concat(const DnMemAllocator* allocator, DnStr* string, ...);
 
-// Create a reversed string from string view. If existing string with capacity
-// is passed, it is cleared before storing the result. Must be destroyed with
-// DnStr_Destroy() to free memory.
-void DnStr_Reversed(const DnMemAllocator* allocator, DnStr* string, DnStrView view);
-
-// Reverses a string in place.
-void DnStr_Reverse(DnStr* string, DnRange range);
-
 // Maps characters of a string from to a set of new characters. From and to
 // character set arguments must be of the exact same size.
 void DnStr_Map(DnStr* string, DnRange range, DnStrView from, DnStrView to);

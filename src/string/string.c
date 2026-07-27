@@ -203,33 +203,6 @@ void DnStr_Concat(const DnMemAllocator* allocator, DnStr* string, ...) {
   va_end(args);
 }
 
-void DnStr_Reversed(const DnMemAllocator* allocator, DnStr* string, DnStrView view) {
-  DN_ASSERT(allocator != nullptr);
-  DN_ASSERT(DnStr_IsValid(string));
-
-  DnStr_Clear(string);
-  DnStr_EnsureCapacity(allocator, string, view.length);
-
-  for (u64 i = 0; i < view.length; i++) {
-    string->data[i] = view.data[view.length - 1 - i];
-  }
-
-  string->data[view.length] = '\0';
-  string->length = view.length;
-}
-
-void DnStr_Reverse(DnStr* string, DnRange range) {
-  DN_ASSERT(string != nullptr);
-
-  DnRange_ToIndices(&range, string->length);
-  char* data = string->data + range.start;
-  u64 length = (u64)(range.end - range.start);
-
-  for (u64 i = 0; i < length / 2; i++) {
-    DN_SWAP(data[i], data[length - 1 - i]);
-  }
-}
-
 void DnStr_Map(DnStr* string, DnRange range, DnStrView from, DnStrView to) {
   DN_ASSERT(string != nullptr);
   DN_ASSERT(DnStrView_IsValid(from));
