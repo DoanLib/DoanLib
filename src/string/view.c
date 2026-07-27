@@ -70,7 +70,7 @@ i64 DnStrView_Find(DnStrView view, DnStrView occurrence) {
   DN_ASSERT(DnStrView_IsValid(occurrence));
 
   if (occurrence.length > 1) {
-    for (i64 i = 0; i + (i64)occurrence.length <= (i64)view.length; ++i) {
+    for (i64 i = 0; i + (i64)occurrence.length - 1 < (i64)view.length; ++i) {
       if (memcmp(view.data + i, occurrence.data, occurrence.length) == 0)
         return i + 1;
     }
