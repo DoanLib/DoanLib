@@ -36,3 +36,33 @@ void DnLog_Error(const char* format, ...) {
 }
 
 #endif // DN_LOG_ENABLED
+
+// == POSITIONAL INDEXING =================================================== //
+
+void DnRange_ToIndex(i64* i, u64 length) {
+  DN_ASSERT(i != nullptr);
+  DN_ASSERT(length <= INT64_MAX);
+  *i = *i <= 0 ? *i + (i64)length : *i - 1;
+  DN_ASSERT(*i >= 0 && *i <= (i64)length);
+}
+
+void DnRange_FromIndex(i64* i) {
+  DN_ASSERT(i != nullptr);
+  DN_ASSERT(*i <= INT64_MAX);
+  *i = *i + 1;
+}
+
+void DnRange_ToIndices(DnRange* range, u64 length) {
+  DN_ASSERT(range != nullptr);
+  DnRange_ToIndex(&range->start, length);
+  DnRange_ToIndex(&range->end, length);
+
+  if (range->start > range->end) {
+    DN_SWAP(range->start, range->end);
+  }
+}
+
+u64 DnRange_GetLength(DnRange range, u64 length) {
+  DnRange_ToIndices(&range, length);
+  return (u64)(range.end - range.start);
+}

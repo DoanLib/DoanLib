@@ -102,3 +102,50 @@ typedef double f64;
   #define DN_ASSERT(expression)
   #define DN_ASSERT_EVALUATE(expression) (void)(expression)
 #endif // DN_ASSERT_ENABLED
+
+// == POSITIONAL INDEXING =================================================== //
+
+// Some functions can accept or return positional ranges instead of zero-based
+// indexes that can be positive integers between 1:length, or negative integers
+// between -length:-1, where zero and length+1 both indicate end position past
+// the last element. This is most commonly used across strings and can be
+// visualized below for a string of 7 length:
+// +-----+----+----+----+----+----+----+----+----+
+// | pos | +1 | +2 | +3 | +4 | +5 | +6 | +7 | +8 |
+// +-----+----+----+----+----+----+----+----+----+
+// | chr |  D |  o |  a |  n |  L |  i |  b | \0 |
+// +-----+----+----+----+----+----+----+----+----+
+// | neg | -7 | -6 | -5 | -4 | -3 | -2 | -1 |  0 |
+// +-----+----+----+----+----+----+----+----+----+
+// This might feel a bit awkward at first compared to zero-based indexing, but
+// it is a more natural way of representing ranges relative to the beginning or
+// the end of a collection (where for zero-based indexing zero has only one
+// meaning for the first element). Here zero intuitively always represents the
+// end of the collection (past the last element) and range for all elements can
+// be specified without knowing collection length in advance (e.g. entire string
+// can be denoted by 1:0 range). Below calls will produce identical results for
+// the same string (returning "Lib"):
+// DnStrView_Substr("DoanLib", DN_RANGE(5, 8));
+// DnStrView_Substr("DoanLib", DN_RANGE(5, 0));
+// DnStrView_Substr("DoanLib", DN_RANGE(-3, 8));
+// DnStrView_Substr("DoanLib", DN_RANGE(-3, 0));
+typedef struct DnRange {
+  i64 start;
+  i64 end;
+} DnRange;
+
+// Utility macro for shorter range struct creation.
+#define DN_RANGE(start, end) (DnRange){ .start = start, .end = end }
+
+// Converts position to zero-based index.
+void DnRange_ToIndex(i64* i, u64 length);
+
+// Converts zero-based index to position.
+void DnRange_ToPosition(i64* i);
+
+// Converts range struct to zero-based indices.
+void DnRange_ToIndices(DnRange* range, u64 length);
+
+// Returns length of a positional range struct.
+// Requires collection's length to calculate range's length.
+u64 DnRange_GetLength(DnRange range, u64 length);

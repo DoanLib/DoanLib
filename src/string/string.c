@@ -1,35 +1,6 @@
 #include "dn/string.h"
 #include <string.h>
 
-// == STRING INDEXING ======================================================= //
-
-void DnStr_PositionToIndex(i64* i, u64 length) {
-  DN_ASSERT(i != nullptr);
-  DN_ASSERT(length <= INT64_MAX);
-  *i = *i <= 0 ? *i + (i64)length : *i - 1;
-  DN_ASSERT(*i >= 0 && *i <= (i64)length);
-}
-
-void DnStr_IndexToPosition(i64* i) {
-  DN_ASSERT(i != nullptr);
-  DN_ASSERT(*i <= INT64_MAX);
-  *i = *i + 1;
-}
-
-void DnStr_RangeToIndices(i64* i, i64* j, u64 length) {
-  DnStr_PositionToIndex(i, length);
-  DnStr_PositionToIndex(j, length);
-
-  if (*i > *j) {
-    DN_SWAP(*i, *j);
-  }
-}
-
-u64 DnStr_RangeLength(i64 i, i64 j, u64 length) {
-  DnStr_RangeToIndices(&i, &j, length);
-  return (u64)(j - i);
-}
-
 // == STRING STRUCT ========================================================= //
 
 DnStr DnStr_Create(const DnMemAllocator* allocator, u64 capacity) {
@@ -196,12 +167,12 @@ DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view) {
   return result;
 }
 
-void DnStr_Reverse(DnStr* string, i64 i, i64 j) {
+void DnStr_Reverse(DnStr* string, DnRange range) {
   DN_ASSERT(string != nullptr);
 
-  DnStr_RangeToIndices(&i, &j, string->length);
-  char* data = string->data + i;
-  u64 length = (u64)(j - i);
+  DnRange_ToIndices(&range, string->length);
+  char* data = string->data + range.start;
+  u64 length = (u64)(range.end - range.start);
 
   for (u64 i = 0; i < length / 2; i++) {
     DN_SWAP(data[i], data[length - 1 - i]);

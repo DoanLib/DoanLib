@@ -48,13 +48,13 @@ bool DnStrView_IsValid(DnStrView view) {
 
 // == STRING VIEW FUNCTIONS ================================================= //
 
-DnStrView DnStrView_SubStr(DnStrView view, i64 i, i64 j) {
+DnStrView DnStrView_SubStr(DnStrView view, DnRange range) {
   DN_ASSERT(DnStrView_IsValid(view));
-  DnStr_RangeToIndices(&i, &j, view.length);
+  DnRange_ToIndices(&range, view.length);
 
   return (DnStrView) {
-    .data = view.data + i,
-    .length = (u64)(j - i),
+    .data = view.data + range.start,
+    .length = (u64)(range.end - range.start),
   };
 }
 

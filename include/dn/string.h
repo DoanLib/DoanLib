@@ -3,44 +3,6 @@
 #include "shared.h"
 #include "memory.h"
 
-// == STRING INDEXING ======================================================= //
-
-// Most string functions accept and return positional integerts of characters
-// that can be positive range between 1:length, or negative range between
-// -length:-1, where zero and length+1 both indicate end position past the last
-// character. This can be visualized below for a string of 7 length:
-// +-----+----+----+----+----+----+----+----+----+
-// | pos | +1 | +2 | +3 | +4 | +5 | +6 | +7 | +8 |
-// +-----+----+----+----+----+----+----+----+----+
-// | chr |  D |  o |  a |  n |  L |  i |  b | \0 |
-// +-----+----+----+----+----+----+----+----+----+
-// | neg | -7 | -6 | -5 | -4 | -3 | -2 | -1 |  0 |
-// +-----+----+----+----+----+----+----+----+----+
-// This might feel a bit awkward at first compared to zero-based indexing, but
-// it is a more natural way of representing string ranges relative to the
-// beginning or the end of a string (where for zero-based indexing zero has only
-// one meaning for the first character). Here zero intuitively always represents
-// the end of the string, which ranges to be specified without need to know
-// string length in advance (e.g. entire string is always denoted by 1:0 range).
-// Below calls will produce identical results for the same string (returning
-// "Lib"):
-// DnStrView_Substr("DoanLib", 5, 8);
-// DnStrView_Substr("DoanLib", 5, 0);
-// DnStrView_Substr("DoanLib", -3, 8);
-// DnStrView_Substr("DoanLib", -3, 0);
-
-// Converts a string position to zero-based index.
-void DnStr_PositionToIndex(i64* i, u64 length);
-
-// Converts a string zero-based index to position.
-void DnStr_IndexToPosition(i64* i);
-
-// Converts a string range to zero-based indices.
-void DnStr_RangeToIndices(i64* i, i64* j, u64 length);
-
-// Returns length of a string range.
-u64 DnStr_RangeLength(i64 i, i64 j, u64 length);
-
 // == STRING MACROS ========================================================= //
 
 // Printf format string for string view and its size.
@@ -93,7 +55,7 @@ bool DnStrView_IsValid(DnStrView view);
 // == STRING VIEW FUNCTIONS ================================================= //
 
 // Returns substring of a string view.
-DnStrView DnStrView_SubStr(DnStrView view, i64 i, i64 j);
+DnStrView DnStrView_SubStr(DnStrView view, DnRange range);
 
 // Compares two string views.
 bool DnStrView_Compare(DnStrView first, DnStrView second);
@@ -166,4 +128,4 @@ DnStr DnStr_Concat(const DnMemAllocator* allocator, ...);
 DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view);
 
 // Reverses a string in place.
-void DnStr_Reverse(DnStr* string, i64 i, i64 j);
+void DnStr_Reverse(DnStr* string, DnRange range);
