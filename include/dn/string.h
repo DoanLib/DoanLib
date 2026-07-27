@@ -85,6 +85,9 @@ DnStr DnStr_Create(const DnMemAllocator* allocator, u64 capacity);
 // Destroys a string and frees its memory.
 void DnStr_Destroy(const DnMemAllocator* allocator, DnStr* string);
 
+// Clears string content without freeing memory.
+void DnStr_Clear(DnStr* string);
+
 // Creates a string copy from another string.
 // Must be destroyed with DnStr_Destroy() to free memory.
 DnStr DnStr_Clone(const DnMemAllocator* allocator, DnStr string);

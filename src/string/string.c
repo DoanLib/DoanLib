@@ -24,6 +24,12 @@ void DnStr_Destroy(const DnMemAllocator* allocator, DnStr* string) {
   DN_MEM_FREE(allocator, string->data);
 }
 
+void DnStr_Clear(DnStr* string) {
+  DN_ASSERT(string != nullptr);
+  string->data[0] = '\0';
+  string->length = 0;
+}
+
 DnStr DnStr_Clone(const DnMemAllocator* allocator, DnStr string) {
   DN_ASSERT(allocator != nullptr);
 
