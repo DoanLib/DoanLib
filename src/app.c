@@ -1,7 +1,6 @@
 #include "dn/app.h"
 #include "dn/memory.h"
 #include "dn/shared.h"
-#include "dn/structs.h"
 #include "dn/system.h"
 #include "dn/main.h"
 
