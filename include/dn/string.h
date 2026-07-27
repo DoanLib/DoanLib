@@ -38,19 +38,15 @@ DnStrView DnStrView_FromCStrLength(const char* string, u64 length);
 // Checks whether string view is empty.
 bool DnStrView_IsEmpty(DnStrView view);
 
+// Checks whether string is valid. Used for debug assertions.
+bool DnStrView_IsValid(DnStrView view);
+
 // Converts string view to a null-terminated C string. This will always allocate
 // memory for returned result, so it must be freed by the caller, even if the
 // string view is empty or already null terminated. This is done to avoid
 // ambiguitiy regarding onwnership of the returned memory. Use temporary
 // allocator when possible to make temporary conversions to C string fast.
 const char* DnStrView_ToCStr(const DnMemAllocator* allocator, DnStrView view);
-
-#if DN_ASSERT_ENABLED
-
-// Checks whether string is valid. Used for debug assertions.
-bool DnStrView_IsValid(DnStrView view);
-
-#endif // DN_ASSERT_ENABLED
 
 // == STRING VIEW FUNCTIONS ================================================= //
 
@@ -78,6 +74,9 @@ typedef struct DnStr {
   u64 length;
 } DnStr;
 
+// Creates an empty string without any allocation.
+DnStr DnStr_Empty();
+
 // Creates an empty string with specified capacity.
 // Must be destroyed with DnStr_Destroy() to free memory.
 DnStr DnStr_Create(const DnMemAllocator* allocator, u64 capacity);
@@ -85,12 +84,9 @@ DnStr DnStr_Create(const DnMemAllocator* allocator, u64 capacity);
 // Destroys a string and frees its memory.
 void DnStr_Destroy(const DnMemAllocator* allocator, DnStr* string);
 
-// Clears string content without freeing memory.
-void DnStr_Clear(DnStr* string);
-
 // Creates a string copy from another string.
 // Must be destroyed with DnStr_Destroy() to free memory.
-DnStr DnStr_Clone(const DnMemAllocator* allocator, DnStr string);
+DnStr DnStr_Clone(const DnMemAllocator* allocator, const DnStr* string);
 
 // Creates a string copy from a string view.
 // Must be destroyed with DnStr_Destroy() to free memory.
@@ -105,30 +101,38 @@ DnStr DnStr_FromCStr(const DnMemAllocator* allocator, const char* string);
 DnStr DnStr_FromCStrLength(const DnMemAllocator* allocator, const char* string, u64 length);
 
 // Checks whether string is empty.
-bool DnStr_IsEmpty(DnStr string);
+bool DnStr_IsEmpty(const DnStr* string);
+
+// Checks whether string is valid. Used for debug assertions.
+bool DnStr_IsValid(const DnStr* string);
 
 // Returns string view of a string.
-DnStrView DnStr_AsView(DnStr string);
+DnStrView DnStr_AsView(const DnStr* string);
 
 // Returns null-terminated character buffer of a string. This function does not
 // allocate since string buffer is internally always null-terminated.
-const char* DnStr_AsCStr(DnStr string);
+const char* DnStr_AsCStr(const DnStr* string);
 
 // == STRING FUNCTIONS ====================================================== //
 
 // Ensures string capacity for specified length.
 void DnStr_EnsureCapacity(const DnMemAllocator* allocator, DnStr* string, u64 length);
 
+// Clears string content without freeing memory.
+void DnStr_Clear(DnStr* string);
+
 // Appends string view to a string.
 void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view);
 
-// Concatenates multiple string views into a new string. Must be destroyed with
-// DnStr_Destroy() to free memory.
-DnStr DnStr_Concat(const DnMemAllocator* allocator, ...); 
+// Concatenates multiple string views into a string. If existing string with
+// capacity is passed, it is cleared before storing the result. Must be
+// destroyed with DnStr_Destroy() to free memory.
+void DnStr_Concat(const DnMemAllocator* allocator, DnStr* string, ...);
 
-// Create a reversed string from string view. Must be destroyed with
+// Create a reversed string from string view. If existing string with capacity
+// is passed, it is cleared before storing the result. Must be destroyed with
 // DnStr_Destroy() to free memory.
-DnStr DnStr_Reversed(const DnMemAllocator* allocator, DnStrView view);
+void DnStr_Reversed(const DnMemAllocator* allocator, DnStr* string, DnStrView view);
 
 // Reverses a string in place.
 void DnStr_Reverse(DnStr* string, DnRange range);

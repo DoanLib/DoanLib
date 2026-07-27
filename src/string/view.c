@@ -24,6 +24,11 @@ bool DnStrView_IsEmpty(DnStrView view) {
   return view.data == nullptr || view.length == 0;
 }
 
+bool DnStrView_IsValid(DnStrView view) {
+  DN_ASSERT(view.length <= INT64_MAX);
+  return view.data || view.length == 0;
+}
+
 const char* DnStrView_ToCStr(const DnMemAllocator* allocator, DnStrView view) {
   DN_ASSERT(allocator != nullptr);
   DN_ASSERT(DnStrView_IsValid(view));
@@ -36,15 +41,6 @@ const char* DnStrView_ToCStr(const DnMemAllocator* allocator, DnStrView view) {
   result[view.length] = '\0';
   return result;
 }
-
-#if DN_ASSERT_ENABLED
-
-bool DnStrView_IsValid(DnStrView view) {
-  DN_ASSERT(view.length <= INT64_MAX);
-  return view.data || view.length == 0;
-}
-
-#endif // DN_ASSERT_ENABLED
 
 // == STRING VIEW FUNCTIONS ================================================= //
 
