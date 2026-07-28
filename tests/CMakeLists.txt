@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 4.1)
 
 set(TEST_SOURCE_FILES
   "memory.c"
+  "string.c"
+  "structs.c"
   "utility.c"
 )
 
