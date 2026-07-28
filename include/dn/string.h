@@ -74,7 +74,9 @@ typedef struct DnStr {
   u64 length;
 } DnStr;
 
-// Creates an empty string without any allocation.
+// Creates an empty string without any allocation. Even though not necessary, it
+// is still a good practice to call DnStr_Destroy() on any string that might
+// have been modified from initial empty construction.
 DnStr DnStr_Empty();
 
 // Creates an empty string with specified capacity.
@@ -121,12 +123,12 @@ void DnStr_EnsureCapacity(const DnMemAllocator* allocator, DnStr* string, u64 le
 // Clears string content without freeing memory.
 void DnStr_Clear(DnStr* string);
 
-// Appends string view to a string.
+// Appends string view to a string. It is undefined behavior to append string to
+// itself, meaning pass view argument that points to memory of string argument.
 void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view);
 
 // Concatenates multiple string views into a string. If existing string with
-// capacity is passed, it is cleared before storing the result. Must be
-// destroyed with DnStr_Destroy() to free memory.
+// capacity is passed, it is cleared before storing the result.
 void DnStr_Concat(const DnMemAllocator* allocator, DnStr* string, ...);
 
 // Maps characters of a string from to a set of new characters. From and to
