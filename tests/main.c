@@ -1,23 +1,16 @@
 #include <dn/shared.h>
 #include <dn/main.h>
 
-extern bool DnTest_Memory();
-extern bool DnTest_Utility();
+extern void DnTest_Memory();
+extern void DnTest_String();
+extern void DnTest_Structs();
+extern void DnTest_Utility();
 
 DN_DEFINE_MAIN_ENTRY() {
-  bool success = true;
-
-  if (!DnTest_Memory()) {
-    success = false;
-  }
-
-  if (!DnTest_Utility()) {
-    success = false;
-  }
-
-  if (!success) {
-    return DnExitCode_TestFailure;
-  }
+  DnTest_Memory();
+  DnTest_String();
+  DnTest_Structs();
+  DnTest_Utility();
 
   return DnExitCode_Success;
 }
