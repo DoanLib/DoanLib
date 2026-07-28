@@ -2,6 +2,16 @@
 #include "dn/memory.h"
 #include <string.h>
 
+// == STRING VIEW CONSTANTS ================================================= //
+
+const DnStrView DnStrView_Empty = DN_STR_VIEW_LITERAL("");
+const DnStrView DnStrView_Letter = DN_STR_VIEW_LITERAL("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+const DnStrView DnStrView_Digit = DN_STR_VIEW_LITERAL("0123456789");
+const DnStrView DnStrView_WhiteSpace = DN_STR_VIEW_LITERAL(" \t\n\r\f\v");
+const DnStrView DnStrView_AlphaNumeric = DN_STR_VIEW_LITERAL("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+const DnStrView DnStrView_UpperCase = DN_STR_VIEW_LITERAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+const DnStrView DnStrView_LowerCase = DN_STR_VIEW_LITERAL("abcdefghijklmnopqrstuvwxyz");
+
 // == STRING VIEW STRUCT ==================================================== //
 
 DnStrView DnStrView_FromCStr(const char* string) {

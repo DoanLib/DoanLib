@@ -13,8 +13,12 @@
 #define DN_STR_VIEW_ARG(view) (view.length), (view.data)
 
 // Creating string view from literal. Avoids calling strlen() by deducing length
-// at compile time.
-#define DN_STR_VIEW_LITERAL(text) DnStrView_FromCStrLength(text, sizeof(text) - 1)
+// at compile time. Returns struct directly to satisfy constexpr requirements.
+#define DN_STR_VIEW_LITERAL(text) \
+  (DnStrView) { \
+    .data = text, \
+    .length = sizeof(text) - 1, \
+  }
 
 // Creating string from literal. Avoids calling strlen() by deducing length at
 // compile time. Must be destroyed with DnStr_Destroy() to free memory.
@@ -47,6 +51,29 @@ bool DnStrView_IsValid(DnStrView view);
 // ambiguitiy regarding onwnership of the returned memory. Use temporary
 // allocator when possible to make temporary conversions to C string fast.
 const char* DnStrView_ToCStr(const DnMemAllocator* allocator, DnStrView view);
+
+// == STRING VIEW CONSTANTS ================================================= //
+
+// Emptry string view.
+extern const DnStrView DnStrView_Empty;
+
+// String view consisting of letters (upper and lower case).
+extern const DnStrView DnStrView_Letter;
+
+// String view consisting of digits.
+extern const DnStrView DnStrView_Digit;
+
+// String view consisting of whitespaces.
+extern const DnStrView DnStrView_WhiteSpace;
+
+// String view consisting of letters and digits.
+extern const DnStrView DnStrView_AlphaNumeric;
+
+// String view consisting of upper case letters.
+extern const DnStrView DnStrView_UpperCase;
+
+// String view consistring of lower case letters.
+extern const DnStrView DnStrView_LowerCase;
 
 // == STRING VIEW FUNCTIONS ================================================= //
 
