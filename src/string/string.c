@@ -29,7 +29,7 @@ void DnStr_Destroy(const DnMemAllocator* allocator, DnStr* string) {
   DN_ASSERT(allocator != nullptr);
   DN_ASSERT(string != nullptr);
 
-  DN_ASSERT(DnStr_IsValid(*string));
+  DN_ASSERT(DnStr_IsValid(string));
   DN_MEM_FREE(allocator, string->data);
 }
 
