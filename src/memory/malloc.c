@@ -17,10 +17,7 @@ static void* DnMemMalloc_Realloc(const DnMemAllocator* allocator, void* allocati
   DN_ASSERT(allocator);
   DN_UNUSED(allocator);
 
-  void* reallocation = _aligned_realloc(allocation, size, alignment);
-  DN_ASSERT_ALWAYS(reallocation);
-
-  return reallocation;
+  return _aligned_realloc(allocation, size, alignment);
 }
 
 static void DnMemMalloc_Free(const DnMemAllocator* allocator, void* allocation) {
