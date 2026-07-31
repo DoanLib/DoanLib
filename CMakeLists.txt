@@ -100,6 +100,7 @@ set(SOURCE_FILES
   "src/memory/temp.c"
   "src/string/string.c"
   "src/string/view.c"
+  "src/structs/array.c"
   "src/structs/bitfield.c"
   "src/utility/file.c"
   "src/system/system.c"
