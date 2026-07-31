@@ -133,7 +133,7 @@ const char* DnStr_AsCStr(const DnStr* string) {
 
 // == STRING FUNCTIONS ====================================================== //
 
-void DnStr_EnsureCapacity(const DnMemAllocator* allocator, DnStr* string, u64 length) {
+void DnStr_Reserve(const DnMemAllocator* allocator, DnStr* string, u64 length) {
   DN_ASSERT(allocator != nullptr);
   DN_ASSERT(DnStr_IsValid(string));
 
@@ -158,7 +158,7 @@ void DnStr_Append(const DnMemAllocator* allocator, DnStr* string, DnStrView view
   DN_ASSERT(DnStr_IsValid(string));
 
   u64 newLength = string->length + view.length;
-  DnStr_EnsureCapacity(allocator, string, newLength);
+  DnStr_Reserve(allocator, string, newLength);
 
   memcpy(string->data + string->length, view.data, view.length);
   string->data[newLength] = '\0'; 
@@ -186,7 +186,7 @@ void DnStr_Concat(const DnMemAllocator* allocator, DnStr* string, ...) {
   va_end(args);
 
   DnStr_Clear(string);
-  DnStr_EnsureCapacity(allocator, string, length);
+  DnStr_Reserve(allocator, string, length);
 
   va_start(args, string);
   while (true) {

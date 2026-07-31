@@ -145,7 +145,7 @@ const char* DnStr_AsCStr(const DnStr* string);
 // == STRING FUNCTIONS ====================================================== //
 
 // Ensures string capacity for specified length.
-void DnStr_EnsureCapacity(const DnMemAllocator* allocator, DnStr* string, u64 length);
+void DnStr_Reserve(const DnMemAllocator* allocator, DnStr* string, u64 length);
 
 // Clears string content without freeing memory.
 void DnStr_Clear(DnStr* string);
