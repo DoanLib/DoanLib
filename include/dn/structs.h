@@ -1,34 +1,8 @@
 #pragma once
 
-#include "shared.h"
-#include "memory.h"
+#include "internal/structs.h"
 
-// == ARRAY INTERNAL ======================================================== //
-
-typedef struct DnArrayInternal {
-  void** data;
-  u64* capacity;
-  u64* length;
-  u64 typeSize;
-  u64 typeAlignment;
-} DnArrayInternal;
-
-#define DN_ARRAY_INTERNAL_ERASURE(array) ({ \
-    auto _array = array; \
-    (DnArrayInternal) { \
-      .data = (void**)&_array->data, \
-      .capacity = &_array->capacity, \
-      .length = &_array->length, \
-      .typeSize = sizeof(typeof(*_array->data)), \
-      .typeAlignment = alignof(typeof(*_array->data)), \
-    }; \
-  })
-
-void DnArrayInternal_Init(const DnMemAllocator* allocator, DnArrayInternal* array, u64 initialCapacity);
-void DnArrayInternal_Deinit(const DnMemAllocator* allocator, DnArrayInternal* array);
-void DnArrayInternal_Reserve(const DnMemAllocator* allocator, DnArrayInternal* array, u64 neededCapacity);
-
-// == ARRAY TYPED =========================================================== //
+// == ARRAY ================================================================= //
 
 #define DnArray(Type) \
   struct { \
@@ -52,8 +26,18 @@ void DnArrayInternal_Reserve(const DnMemAllocator* allocator, DnArrayInternal* a
     DnArrayInternal_Reserve(allocator, &_array, neededCapacity); \
   })
 
-#define DnArray_Resize
-#define DnArray_Append
-#define DnArray_Insert
-#define DnArray_Erase
-#define DnArray_Clear
+#define DnArray_Resize(allocator, array, elementCount) ({ \
+    auto _array = DN_ARRAY_INTERNAL_ERASURE(array); \
+    DnArrayInternal_Resize(allocator, &_array, elementCount); \
+  })
+
+#define DnArray_Append(allocator, array, element) ({ \
+    DN_ASSERT(typeof(*array->data) == typeof(element)); \
+    auto _array = DN_ARRAY_INTERNAL_ERASURE(array); \
+    DnArrayInternal_Append(allocator, array, (const void*)&element); \
+  })
+
+#define DnArray_Clear(array) ({ \
+    auto _array = DN_ARRAY_INTERNAL_ERASURE(array); \
+    DnArrayInternal_Clear(array); \
+  })

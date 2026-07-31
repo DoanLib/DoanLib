@@ -30,3 +30,29 @@ void DnArrayInternal_Reserve(const DnMemAllocator* allocator, DnArrayInternal* a
     *array->capacity = neededCapacity;
   }
 }
+
+void DnArrayInternal_Resize(const DnMemAllocator* allocator, DnArrayInternal* array, u64 elementCount) {
+  DN_ASSERT(allocator != nullptr);
+  DN_ASSERT(array != nullptr);
+
+  if (elementCount > *array->length) {
+    DnArrayInternal_Reserve(allocator, array, elementCount);
+    memset((u8*)*array->data + (*array->length * array->typeSize), 0, elementCount - *array->length);
+  }
+
+  *array->length = elementCount;
+}
+
+void DnArrayInternal_Append(const DnMemAllocator* allocator, DnArrayInternal* array, const void* element) {
+  DN_ASSERT(allocator != nullptr);
+  DN_ASSERT(array != nullptr);
+
+  DnArrayInternal_Reserve(allocator, array, *array->length + 1);
+  memcpy((u8*)*array->data + (*array->length * array->typeSize), element, array->typeSize);
+  *array->length += 1;
+}
+
+void DnArrayInternal_Clear(DnArrayInternal* array) {
+  DN_ASSERT(array != nullptr);
+  *array->length = 0;
+}
