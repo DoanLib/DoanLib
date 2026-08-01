@@ -1,5 +1,7 @@
 #pragma once
 
+#include "internal/main.h"
+
 // == EXIT CODES ============================================================ //
 
 // List of known exit codes returned by the library.
@@ -16,7 +18,6 @@ typedef enum DnExitCode : int {
 // Helps define the main entry point for the library. This is for convenience
 // and for aid in correctness of initialization and deinitialization.
 #define DN_DEFINE_MAIN_ENTRY() \
-  DnExitCode DnMainWrapper(int argc, char* argv[]); \
   int main(int argc, char* argv[]) { \
     return DnMainWrapper(argc, argv); \
   } \

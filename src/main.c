@@ -3,9 +3,6 @@
 
 // == MAIN ENTRY ============================================================ //
 
-// Declaration of user defined main entry function.
-DnExitCode DnMain();
-
 DnExitCode DnMainWrapper(int argc, char* argv[]) {
   // #todo: Parse commandline arguments.
   DN_UNUSED(argc);
