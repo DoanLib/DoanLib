@@ -77,6 +77,7 @@ typedef double f64;
 // == ASSERTION MACROS ====================================================== //
 
 // Implementation of the assertion macro. Should not be used directly.
+// #todo: Add file and line number to the assertion message.
 #define DN_ASSERT_IMPLEMENTATION(expression, expressionString) \
   do { \
     if (DN_UNLIKELY(!(expression))) { \

@@ -75,7 +75,8 @@ void DnCmdLine_Deinit(DnCmdLine* commandLine) {
 bool DnCmdLine_HasArgument(const DnCmdLine* commandLine, DnStrView argument) {
   DN_ASSERT(commandLine != nullptr);
 
-  for (u64 i = 1; i < commandLine->arguments.length; ++i) {
+  // #todo: String comparison should be case-insensitive.
+  for (u64 i = 0; i < commandLine->arguments.length; ++i) {
     if (DnStrView_Compare(commandLine->arguments.data[i], argument)) {
       return true;
     }
