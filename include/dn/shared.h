@@ -103,6 +103,16 @@ typedef double f64;
   #define DN_ASSERT_EVALUATE(expression) (void)(expression)
 #endif // DN_ASSERT_ENABLED
 
+// Static assertion for comparing types with qualifiers.
+#define DN_ASSERT_TYPES_EQUAL(left, right) \
+  static_assert(_Generic(left, right: true, default: false), \
+  "Types are not equal: " #left " and " #right);
+
+// Static assertion for comparing types without qualifiers.
+#define DN_ASSERT_TYPES_EQUAL_UNQUAL(left, right) \
+  static_assert(_Generic(typeof_unqual(left), typeof_unqual(right): true, default: false), \
+  "Unqualified types are not equal: " #left " and " #right);
+
 // == POSITIONAL INDEXING =================================================== //
 
 // Some functions can accept or return positional ranges instead of zero-based

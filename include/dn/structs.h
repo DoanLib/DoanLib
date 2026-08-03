@@ -35,7 +35,7 @@
     auto _array = array; \
     auto _element = element; \
     auto _internal = DN_ARRAY_TO_INTERNAL(_array); \
-    static_assert(DN_TYPE_COMPARE(_array->data, &_element), "Incompatible array element type"); \
+    DN_ASSERT_TYPES_EQUAL_UNQUAL(_array->data, &_element); \
     DnArrayInternal_Append(allocator, &_internal, (const void*)&_element); \
   })
 
