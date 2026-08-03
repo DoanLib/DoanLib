@@ -1,5 +1,7 @@
 #pragma once
 
+#include "structs.h"
+#include "string.h"
 #include "internal/main.h"
 
 // == EXIT CODES ============================================================ //
@@ -11,6 +13,7 @@ typedef enum DnExitCode : int {
   DnExitCode_LibInitFailure = 2,
   DnExitCode_AppInitFailure = 3,
   DnExitCode_TestFailure = 4,
+  DnExitCode_CommandLineFailure = 5,
 } DnExitCode;
 
 // == MAIN ENTRY ============================================================ //
@@ -32,3 +35,23 @@ bool DnLib_Init();
 // Deinitializes the library. Should be called after all other library functions
 // have been called at the very end of main().
 void DnLib_Deinit();
+
+// == COMMAND LINE ========================================================== //
+
+// Command line argument structure.
+typedef struct DnCmdLine {
+  DnStrView program;
+  DnArray(DnStrView) arguments;
+} DnCmdLine;
+
+// Retrieves the main commandline for the current process.
+DnCmdLine* DnCmdLine_GetMain();
+
+// Initializes command line structure using arguments passed to main entry.
+bool DnCmdLine_InitFromMain(DnCmdLine* commandLine, int argc, char* argv[]);
+
+// Deinitializes command line structure and frees any allocated memory.
+void DnCmdLine_Deinit(DnCmdLine* commandLine);
+
+// Checks if command line contains an argument.
+bool DnCmdLine_HasArgument(const DnCmdLine* commandLine, DnStrView argument);
