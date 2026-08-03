@@ -12,32 +12,34 @@
   }
 
 #define DnArray_Init(allocator, array, initialCapacity) ({ \
-    auto _array = DN_ARRAY_INTERNAL_ERASURE(array); \
-    DnArrayInternal_Init(allocator, &_array, initialCapacity); \
+    auto _internal = DN_ARRAY_TO_INTERNAL(array); \
+    DnArrayInternal_Init(allocator, &_internal, initialCapacity); \
   })
 
 #define DnArray_Deinit(allocator, array) ({ \
-    auto _array = DN_ARRAY_INTERNAL_ERASURE(array); \
-    DnArrayInternal_Deinit(allocator, &_array); \
+    auto _internal = DN_ARRAY_TO_INTERNAL(array); \
+    DnArrayInternal_Deinit(allocator, &_internal); \
   })
 
-#define DnArray_Reserve(allocator, array, neededCapacity) ({ \
-    auto _array = DN_ARRAY_INTERNAL_ERASURE(array); \
-    DnArrayInternal_Reserve(allocator, &_array, neededCapacity); \
+#define DnArray_Reserve(allocator, array, exactCapacity) ({ \
+    auto _internal = DN_ARRAY_TO_INTERNAL(array); \
+    DnArrayInternal_Reserve(allocator, &_internal, exactCapacity); \
   })
 
 #define DnArray_Resize(allocator, array, elementCount) ({ \
-    auto _array = DN_ARRAY_INTERNAL_ERASURE(array); \
-    DnArrayInternal_Resize(allocator, &_array, elementCount); \
+    auto _internal = DN_ARRAY_TO_INTERNAL(array); \
+    DnArrayInternal_Resize(allocator, &_internal, elementCount); \
   })
 
 #define DnArray_Append(allocator, array, element) ({ \
-    DN_ASSERT(typeof(*array->data) == typeof(element)); \
-    auto _array = DN_ARRAY_INTERNAL_ERASURE(array); \
-    DnArrayInternal_Append(allocator, array, (const void*)&element); \
+    auto _array = array; \
+    auto _element = element; \
+    auto _internal = DN_ARRAY_TO_INTERNAL(_array); \
+    static_assert(DN_TYPE_COMPARE(_array->data, &_element), "Incompatible array element type"); \
+    DnArrayInternal_Append(allocator, &_internal, (const void*)&_element); \
   })
 
 #define DnArray_Clear(array) ({ \
-    auto _array = DN_ARRAY_INTERNAL_ERASURE(array); \
-    DnArrayInternal_Clear(array); \
+    auto _internal = DN_ARRAY_TO_INTERNAL(array); \
+    DnArrayInternal_Clear(&_internal); \
   })

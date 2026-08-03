@@ -21,13 +21,13 @@ void DnArrayInternal_Deinit(const DnMemAllocator* allocator, DnArrayInternal* ar
   *array->length = 0;
 }
 
-void DnArrayInternal_Reserve(const DnMemAllocator* allocator, DnArrayInternal* array, u64 neededCapacity) {
+void DnArrayInternal_Reserve(const DnMemAllocator* allocator, DnArrayInternal* array, u64 exactCapacity) {
   DN_ASSERT(allocator != nullptr);
   DN_ASSERT(array != nullptr);
 
-  if (*array->capacity < neededCapacity) {
-    *array->data = DN_MEM_REALLOC(allocator, *array->data, neededCapacity * array->typeSize, array->typeAlignment);
-    *array->capacity = neededCapacity;
+  if (*array->capacity < exactCapacity) {
+    *array->data = DN_MEM_REALLOC(allocator, *array->data, exactCapacity * array->typeSize, array->typeAlignment);
+    *array->capacity = exactCapacity;
   }
 }
 
