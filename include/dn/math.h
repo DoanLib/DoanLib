@@ -1,6 +1,7 @@
 #pragma once
 
 #include "shared.h"
+#include <math.h>
 
 // == MATH MACROS =========================================================== //
 
@@ -22,6 +23,17 @@
 #define DN_IS_POW2(value) ({ \
     u64 _value = (value); \
     _value != 0 && (_value & (_value - 1)) == 0; \
+  })
+
+// Compare floating-point values for near-equality.
+#define DN_NEAR_EQUAL(a, b, epsilon) ({ \
+    auto _a = (a); \
+    auto _b = (b); \
+    auto _epsilon = (epsilon); \
+    _Generic(typeof(_a), \
+      float: fabsf, \
+      double: fabs \
+    )(_a - _b) <= _epsilon; \
   })
 
 // == MATH VECTORS ========================================================== //
