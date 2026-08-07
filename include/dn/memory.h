@@ -40,8 +40,8 @@
 // Check whether given value is aligned to multiple of the specified size.
 // Assumes that the alignment is a power of 2. Can also be used with pointers.
 #define DN_MEM_IS_ALIGNED(size, alignment) ({ \
-    u64 _size = (size); \
-    u64 _alignment = (alignment); \
+    u64 _size = (u64)(size); \
+    u64 _alignment = (u64)(alignment); \
     DN_ASSERT(DN_IS_POW2(_alignment)); \
     (_size & (_alignment - 1)) == 0; \
   })
@@ -49,8 +49,8 @@
 // Aligns the given size up to the nearest multiple of the specified alignment.
 // Assumes that the alignment is a power of 2. Can also be used with pointers.
 #define DN_MEM_ALIGN_UP(size, alignment) ({ \
-    u64 _size = (size); \
-    u64 _alignment = (alignment); \
+    u64 _size = (u64)(size); \
+    u64 _alignment = (u64)(alignment); \
     DN_ASSERT(DN_IS_POW2(_alignment)); \
     ((_size) + (_alignment - 1)) & ~(_alignment - 1); \
   })
