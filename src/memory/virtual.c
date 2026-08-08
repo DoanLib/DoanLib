@@ -38,12 +38,6 @@ void DnMemVirtual_Deinit() {
 // == VIRTUAL MEMORY ALLOCATION ============================================= //
 
 void* DnMemVirtual_Reserve(u64 size) {
-  // On Windows, virtual memory adress space always operates on pages, so not
-  // having size aligned to page boundaries will not have any adverse effects
-  // and the call will automatically round up to the nearest page boundary.
-  // This check is to ensure that the caller is aware of the above.
-  DN_ASSERT(DN_MEM_IS_ALIGNED(size, DnMem_SystemPageSize));
-
   void* address = VirtualAlloc(nullptr, size, MEM_RESERVE, PAGE_NOACCESS);
   if (DN_UNLIKELY(address == nullptr)) {
     DN_LOG_ERROR("Failed to reserve virtual memory");
