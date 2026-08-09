@@ -83,7 +83,6 @@ void DnAssert_Internal(const char* expression, const char* file, u64 line);
 #define DN_ASSERT_ALWAYS(expression) ({ \
     if (DN_UNLIKELY(!(expression))) { \
       DnAssert_Internal(#expression, __FILE__, __LINE__); \
-      DN_ABORT(); \
     } \
   })
 

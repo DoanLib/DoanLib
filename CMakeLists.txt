@@ -34,6 +34,7 @@ function(dn_target_setup TARGET)
     DN_CONFIG_DEBUG=$<CONFIG:Debug>
     DN_CONFIG_DEVELOP=$<CONFIG:Develop>
     DN_CONFIG_RELEASE=$<CONFIG:Release>
+    DN_BUILD_PROJECT_DIR="${PROJECT_SOURCE_DIR}/"
   )
 
   target_compile_options(${TARGET} PRIVATE
@@ -121,10 +122,10 @@ dn_target_setup(DoanLib)
 # ============================================================================ #
 
 include(CTest)
-add_subdirectory(Tests)
+add_subdirectory(tests)
 
 # ============================================================================ #
 #   Example                                                                    #
 # ============================================================================ #
 
-add_subdirectory(Example)
+add_subdirectory(example)

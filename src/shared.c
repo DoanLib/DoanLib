@@ -1,4 +1,5 @@
 #include "dn/shared.h"
+#include "dn/string.h"
 #include <stdio.h>
 
 // == STATIC ASSERTIONS ===================================================== //
@@ -40,7 +41,13 @@ void DnLog_Error(const char* format, ...) {
 // == ASSERTION ============================================================= //
 
 void DnAssert_Internal(const char* expression, const char* file, u64 line) {
-  DN_LOG_ERROR("Assertion failed: %s [%s:%d]", expression, file, line); \
+  DnStrView fileView = DnStrView_FromCStr(file);
+  DnStrView projectDirView = DN_STR_VIEW_LITERAL(DN_BUILD_PROJECT_DIR);
+  if (DnStrView_Find(fileView, projectDirView)) {
+    fileView = DnStrView_SubStr(fileView, DN_RANGE(projectDirView.length + 1, 0));
+  }
+
+  DN_LOG_ERROR("Assertion failed: %s [" DN_STR_VIEW_FMT ":%d]", expression, DN_STR_VIEW_ARG(fileView), line); \
   DN_ABORT();
 }
 
