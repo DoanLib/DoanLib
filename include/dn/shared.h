@@ -26,6 +26,9 @@ typedef double f64;
 // Defines whether logging is enabled.
 #define DN_LOG_ENABLED !DN_CONFIG_RELEASE
 
+// Defines whether logging should include source file and line.
+#define DN_LOG_WITH_SOURCE_LINE DN_CONFIG_DEBUG
+
 // Defines whether assertions are enabled.
 #define DN_ASSERT_ENABLED !DN_CONFIG_RELEASE
 
@@ -61,14 +64,14 @@ typedef double f64;
 // == LOGGING MACROS ======================================================== //
 
 #if DN_LOG_ENABLED
-  void DnLog_Info(const char* format, ...);
-  void DnLog_Error(const char* format, ...);
+  void DnLog_Info(const char* format, const char* file, u64 line, ...);
+  void DnLog_Error(const char* format, const char* file, u64 line, ...);
 
-  // Logs an info message using printf-style formatting.
-  #define DN_LOG_INFO(format, ...) DnLog_Info(format "\n" __VA_OPT__(,) __VA_ARGS__)
+  // Logs info message using printf-style formatting.
+  #define DN_LOG_INFO(format, ...) DnLog_Info(format, __FILE__, __LINE__ __VA_OPT__(,) __VA_ARGS__)
 
-  // Logs an error message using printf-style formatting.
-  #define DN_LOG_ERROR(format, ...) DnLog_Error(format "\n" __VA_OPT__(,) __VA_ARGS__)
+  // Logs error message using printf-style formatting.
+  #define DN_LOG_ERROR(format, ...) DnLog_Error(format, __FILE__, __LINE__ __VA_OPT__(,) __VA_ARGS__)
 #else
   #define DN_LOG_INFO(format, ...)
   #define DN_LOG_ERROR(format, ...)

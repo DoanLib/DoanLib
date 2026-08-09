@@ -4,7 +4,7 @@
 
 // == FILE UTILITY ========================================================== //
 
-bool DnUtilFile_Read(const DnMemAllocator* allocator, DnStrView path, u8** outData, u64* outSize) {
+bool DnUtils_ReadFile(const DnMemAllocator* allocator, DnStrView path, u8** outData, u64* outSize) {
   DN_ASSERT(allocator);
   DN_ASSERT(outData);
   DN_ASSERT(outSize);

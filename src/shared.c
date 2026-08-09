@@ -1,5 +1,4 @@
 #include "dn/shared.h"
-#include "dn/string.h"
 #include <stdio.h>
 
 // == STATIC ASSERTIONS ===================================================== //
@@ -19,18 +18,28 @@ static_assert(sizeof(f64) == 8);
 
 #if DN_LOG_ENABLED
 
-void DnLog_Info(const char* format, ...) {
+void DnLog_Epilogue(FILE* stream, const char* file, u64 line) {
+#if DN_LOG_WITH_SOURCE_LINE
+  fprintf(stream, " [%s:%llu]\n", file, line);
+#else
+  fprintf(stream, "\n");
+#endif
+}
+
+void DnLog_Info(const char* format, const char* file, u64 line, ...) {
   va_list args;
-  va_start(args, format);
+  va_start(args, line);
   vfprintf(stdout, format, args);
+  DnLog_Epilogue(stdout, file, line);
   fflush(stdout);
   va_end(args);
 }
 
-void DnLog_Error(const char* format, ...) {
+void DnLog_Error(const char* format, const char* file, u64 line, ...) {
   va_list args;
-  va_start(args, format);
+  va_start(args, line);
   vfprintf(stderr, format, args);
+  DnLog_Epilogue(stdout, file, line);
   fflush(stdout);
   fflush(stderr);
   va_end(args);
@@ -41,13 +50,7 @@ void DnLog_Error(const char* format, ...) {
 // == ASSERTION ============================================================= //
 
 void DnAssert_Internal(const char* expression, const char* file, u64 line) {
-  DnStrView fileView = DnStrView_FromCStr(file);
-  DnStrView projectDirView = DN_STR_VIEW_LITERAL(DN_BUILD_PROJECT_DIR);
-  if (DnStrView_Find(fileView, projectDirView)) {
-    fileView = DnStrView_SubStr(fileView, DN_RANGE(projectDirView.length + 1, 0));
-  }
-
-  DN_LOG_ERROR("Assertion failed: %s [" DN_STR_VIEW_FMT ":%d]", expression, DN_STR_VIEW_ARG(fileView), line); \
+  DN_LOG_ERROR("Assertion failed: %s [%s:%llu]", expression, file, line); \
   DN_ABORT();
 }
 
