@@ -143,7 +143,8 @@ typedef struct DnRange {
 } DnRange;
 
 // Utility macro for shorter range struct creation.
-#define DN_RANGE(start, end) (DnRange){ .start = start, .end = end }
+#define DN_RANGE(startPosition, endPosition) \
+  (DnRange){ .start = (i64)startPosition, .end = (i64)endPosition }
 
 // Utility macro for specifying full range.
 #define DN_RANGE_ALL DN_RANGE(1, 0)
