@@ -126,7 +126,7 @@ void DnTest_MemoryAllocationSuite(const DnMemAllocator* allocator) {
 }
 
 void DnTest_MemoryDefault() {
-  const DnMemAllocator* allocator = DnMemAllocator_GetDefault();
+  const DnMemAllocator* allocator = DnMem_DefaultAllocator();
   DN_ASSERT(allocator != nullptr);
 
   for (u64 i = 0; i < 128; ++i) {
@@ -135,7 +135,7 @@ void DnTest_MemoryDefault() {
 }
 
 void DnTest_MemoryMalloc() {
-  const DnMemAllocator* allocator = DnMemMalloc_GetAllocator();
+  const DnMemAllocator* allocator = DnMem_MallocAllocator();
   DN_ASSERT(allocator != nullptr);
 
   for (u64 i = 0; i < 128; ++i) {
@@ -144,7 +144,7 @@ void DnTest_MemoryMalloc() {
 }
 
 void DnTest_MemoryLarge() {
-  const DnMemAllocator* allocator = DnMemLarge_GetAllocator();
+  const DnMemAllocator* allocator = DnMem_LargeAllocator();
   DN_ASSERT(allocator != nullptr);
 
   for (u64 i = 0; i < 32; ++i) {
@@ -153,7 +153,7 @@ void DnTest_MemoryLarge() {
 }
 
 void DnTest_MemoryTemp() {
-  const DnMemAllocator* allocator = DnMemTemp_GetAllocator();
+  const DnMemAllocator* allocator = DnMem_TempAllocator();
   DN_ASSERT(allocator != nullptr);
 
   for (u64 i = 0; i < 16; ++i) {

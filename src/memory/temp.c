@@ -26,7 +26,7 @@ void DnMemTemp_Deinit() {
   }
 }
 
-const DnMemAllocator* DnMemTemp_GetAllocator() {
+const DnMemAllocator* DnMem_TempAllocator() {
   return DnMemArena_GetAllocator(g_dnMemArenaTemp);
 }
 

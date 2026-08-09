@@ -196,16 +196,21 @@ typedef struct DnMemAllocator {
 
 // Default general purpose memory allocator. Used for common allocation cases
 // when there are no specialized allocators available for given purpose.
-const DnMemAllocator* DnMemAllocator_GetDefault();
+const DnMemAllocator* DnMem_DefaultAllocator();
 
 // Standard C library malloc memory allocator. Should be used only when
 // interfacing with external libraries or when paired with memory debugging
 // tools such as Valgrin or ASAN.
-const DnMemAllocator* DnMemMalloc_GetAllocator();
+const DnMemAllocator* DnMem_MallocAllocator();
 
 // Large allocator that puts individual allocations into separate dedicated
 // system memory pages for simplicity and lower memory fragmentation.
-const DnMemAllocator* DnMemLarge_GetAllocator();
+const DnMemAllocator* DnMem_LargeAllocator();
+
+// Temporary memory allocator that uses an arena for efficient allocation of
+// short-lived memory. Very space efficient when used in combination with
+// DnMemTemp_PushScope() and DnMemTemp_PopScope() for scoped allocations.
+const DnMemAllocator* DnMem_TempAllocator();
 
 // == MEMORY ARENA ========================================================== //
 
@@ -253,18 +258,13 @@ void DnMemArena_PopScope(DnMemArenaScope* scope);
 
 // == MEMORY TEMPORARY ====================================================== //
 
-// Temporary memory allocator that uses an arena for efficient allocation of
-// short-lived memory. Very efficient when used in combination with
-// DnMemTemp_PushScope()/PopScope() for scoped allocations.
-const DnMemAllocator* DnMemTemp_GetAllocator();
-
 // Alias for DnMemArena scope which temporary allocator is backed by.
 typedef struct DnMemArenaScope DnMemTempScope;
 
 // Shorthand for calling DnMemArena_PushScope() on the temporary allocator
-// backed by an arena.
+// backed by an arena. For use with with DnMem_TempAllocator().
 DnMemTempScope DnMemTemp_PushScope();
 
 // Shorthand for calling DnMemArena_PopScope() on the temporary allocator backed
-// by an arena.
+// by an arena. For use with with DnMem_TempAllocator().
 void DnMemTemp_PopScope(DnMemTempScope* scope);

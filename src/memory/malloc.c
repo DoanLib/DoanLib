@@ -34,6 +34,6 @@ static DnMemAllocator g_dnMemMallocAllocator = {
   .context = nullptr,
 };
 
-const DnMemAllocator* DnMemMalloc_GetAllocator() {
+const DnMemAllocator* DnMem_MallocAllocator() {
   return &g_dnMemMallocAllocator;
 }

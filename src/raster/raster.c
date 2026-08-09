@@ -13,7 +13,7 @@ bool DnRasterTexture_Init(DnRasterTexture* texture, i32 width, i32 height) {
   texture->height = height;
 
   DN_ASSERT(!texture->data);
-  texture->data = DN_MEM_ALLOC_TYPES(DnMemLarge_GetAllocator(),
+  texture->data = DN_MEM_ALLOC_TYPES(DnMem_LargeAllocator(),
     DnColor, (u32)texture->width * (u32)texture->height);
 
   return true;
@@ -23,7 +23,7 @@ void DnRasterTexture_Deinit(DnRasterTexture* texture) {
   DN_ASSERT(texture);
 
   if (texture->data) {
-    DN_MEM_FREE(DnMemLarge_GetAllocator(), texture->data);
+    DN_MEM_FREE(DnMem_LargeAllocator(), texture->data);
   }
 }
 

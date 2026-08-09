@@ -56,11 +56,11 @@ bool DnCmdLine_InitFromMain(DnCmdLine* commandLine, int argc, char* argv[]) {
 
   commandLine->program = DnStrView_FromCStr(argv[0]);
 
-  DnArray_Init(DnMemAllocator_GetDefault(),
+  DnArray_Init(DnMem_DefaultAllocator(),
     &commandLine->arguments, (u64)(argc - 1));
 
   for (u64 i = 1; i < (u64)argc; ++i) {
-    DnArray_Append(DnMemAllocator_GetDefault(),
+    DnArray_Append(DnMem_DefaultAllocator(),
       &commandLine->arguments, DnStrView_FromCStr(argv[i]));
   }
 
@@ -69,7 +69,7 @@ bool DnCmdLine_InitFromMain(DnCmdLine* commandLine, int argc, char* argv[]) {
 
 void DnCmdLine_Deinit(DnCmdLine* commandLine) {
   DN_ASSERT(commandLine != nullptr);
-  DnArray_Deinit(DnMemAllocator_GetDefault(), &commandLine->arguments);
+  DnArray_Deinit(DnMem_DefaultAllocator(), &commandLine->arguments);
 }
 
 bool DnCmdLine_HasArgument(const DnCmdLine* commandLine, DnStrView argument) {

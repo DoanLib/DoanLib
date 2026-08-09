@@ -58,6 +58,6 @@ static DnMemAllocator g_dnMemLargeAllocator = {
   .context = nullptr,
 };
 
-const DnMemAllocator* DnMemLarge_GetAllocator() {
+const DnMemAllocator* DnMem_LargeAllocator() {
   return &g_dnMemLargeAllocator;
 }
