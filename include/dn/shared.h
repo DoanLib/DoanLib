@@ -76,29 +76,26 @@ typedef double f64;
 
 // == ASSERTION MACROS ====================================================== //
 
-// Implementation of the assertion macro. Should not be used directly.
-// #todo: Add file and line number to the assertion message.
-#define DN_ASSERT_IMPLEMENTATION(expression, expressionString) \
-  do { \
-    if (DN_UNLIKELY(!(expression))) { \
-      DN_LOG_ERROR("Assertion failed: %s", expressionString); \
-      DN_ABORT(); \
-    } \
-  } while (0)
+// Internal assert implementation function.
+void DnAssert_Internal(const char* expression, const char* file, u64 line);
 
 // Assertion macro that is always executed, even when assertions are disabled.
-#define DN_ASSERT_ALWAYS(expression) \
-  DN_ASSERT_IMPLEMENTATION(expression, #expression)
+#define DN_ASSERT_ALWAYS(expression) ({ \
+    if (DN_UNLIKELY(!(expression))) { \
+      DnAssert_Internal(#expression, __FILE__, __LINE__); \
+      DN_ABORT(); \
+    } \
+  })
 
 #if DN_ASSERT_ENABLED
   // Assertion macro that is only executed when assertions are enabled.
   // Evaluates the expression and triggers fatal error if it fails.
-  #define DN_ASSERT(expression) DN_ASSERT_IMPLEMENTATION(expression, #expression)
+  #define DN_ASSERT(expression) DN_ASSERT_ALWAYS(expression)
 
   // Assertion macro that is always evaluated, even when assertions are
   // disabled. Triggers a fatal error if it fails, but only when assertions are
   // enabled.
-  #define DN_ASSERT_EVALUATE(expression) DN_ASSERT_IMPLEMENTATION(expression, #expression)
+  #define DN_ASSERT_EVALUATE(expression) DN_ASSERT_ALWAYS(expression)
 #else
   #define DN_ASSERT(expression)
   #define DN_ASSERT_EVALUATE(expression) (void)(expression)

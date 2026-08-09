@@ -37,6 +37,13 @@ void DnLog_Error(const char* format, ...) {
 
 #endif // DN_LOG_ENABLED
 
+// == ASSERTION ============================================================= //
+
+void DnAssert_Internal(const char* expression, const char* file, u64 line) {
+  DN_LOG_ERROR("Assertion failed: %s [%s:%d]", expression, file, line); \
+  DN_ABORT();
+}
+
 // == POSITIONAL INDEXING =================================================== //
 
 void DnRange_ToIndex(i64* i, u64 length) {
