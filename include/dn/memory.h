@@ -63,13 +63,15 @@
 constexpr u64 DnMem_DefaultAlignment = alignof(max_align_t);
 
 // Granularity of system virtual memory address reservations in bytes. If you
-// reserve and manage ranges of memory, there is no reason not to use this
-// granurality as the minimum range size.
+// reserve and manage large ranges of memory, there is no reason not to use this
+// granularity as the multiply of range size. For commits you should use system
+// page size instead to not waste available commit space (backed by physical
+// memory and disk), which is usually smaller than this value.
 constexpr u64 DnMem_ReservationGranularity = DN_MEM_KB(64);
 
 // Expected system memory page size in bytes that is used to align virtual
-// memory address reservations and commits to the physical memory. Determines
-// the effective granularity of memory allocations and deallocations.
+// memory address reservations and commits. Determines the effective granularity
+// of memory page faults against physical memory.
 constexpr u64 DnMem_SystemPageSize = DN_MEM_KB(4);
 
 // Common threshold size for large allocations.
@@ -104,28 +106,33 @@ void DnMem_Deinit();
 // Reserves virtual address space of the given size without committing. The size
 // is rounded up to a multiple of system page size. Returns the base address of
 // the reserved region, or null if the reservation failed. Reserved memory
-// cannot be accessed until it is committed via DnMemVirtual_Commit().
+// cannot be accessed until it is committed via DnMemVirtual_Commit(). This
+// syscall function is expensive and should be called as rarely as possible.
 void* DnMemVirtual_Reserve(u64 size);
 
 // Commits previously reserved region, making the specified range usable. The
 // page address and size are expected to align with the system page size. Null
 // page address can be specified to automatically reserve address space using
-// single syscall.
+// single syscall. This syscall function is expensive and should be called as
+// rarely as possible.
 void* DnMemVirtual_Commit(void* page, u64 size);
 
 // Decommits previously committed region, releasing the backing memory (either
 // physical or on disk) while keeping the address space reserved. The page
 // address and size are expected to align with the system page size. The memory
-// region may be recommitted later via DnMemVirtual_Commit().
+// region may be recommitted later via DnMemVirtual_Commit(). This syscall
+// function is expensive and should be called as rarely as possible.
 void DnMemVirtual_Decommit(void* page, u64 size);
 
 // Releases an entire region of virtual address space that was previously
 // reserved, freeing both the reservation and any committed memory. The page
-// address must be the base address returned by the original reservation.
+// address must be the base address returned by the original reservation. This
+// syscall function is expensive and should be called as rarely as possible.
 void DnMemVirtual_Release(void* page);
 
 // Returns the size of the virtual memory region starting at the given page
-// address, or 0 if the page address is invalid.
+// address, or 0 if the page address is invalid. This syscall function is
+// expensive and should be called as rarely as possible.
 u64 DnMemVirtual_QuerySize(void* page);
 
 // == MEMORY ALLOCATION ====================================================== //

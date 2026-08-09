@@ -54,6 +54,7 @@ static void DnMemArena_InitChunk(DnMemArenaChunk* chunk, u64 chunkSize) {
 }
 
 static DnMemArenaChunk* DnMemArena_CreateChunk(u64 chunkSize) {
+  DN_ASSERT(DN_MEM_IS_ALIGNED(chunkSize, DnMem_ReservationGranularity));
   u8* chunkMemory = (u8*)DnMemVirtual_Commit(nullptr, chunkSize);
   DN_ASSERT_ALWAYS(chunkMemory);
 

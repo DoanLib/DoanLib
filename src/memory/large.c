@@ -2,6 +2,11 @@
 
 // == LARGE MEMORY ========================================================== //
 
+// #todo: Introduce page allocator that could reserve a very large range of
+// virtual memory and then commit pages on demand to avoid expensive system
+// calls for each allocation. This would also allow for caching decommitted
+// pages for reuse. Make such page allocator utilized by e.g. memory arena.
+
 static void* DnMemLarge_Alloc(const DnMemAllocator* allocator, u64 size, u64 alignment) {
   DN_ASSERT(allocator);
   DN_UNUSED(allocator);
