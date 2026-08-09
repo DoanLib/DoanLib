@@ -1,10 +1,6 @@
 #include "dn/memory.h"
 #include "dn/shared.h"
 
-// == MEMORY ARENA CONSTANTS ================================================ //
-
-constexpr u64 DnMemArena_LargeSizeThreshold = DnMemLarge_SizeThreshold;
-
 // == MEMORY ARENA STRUCTS ================================================== //
 
 typedef struct DnMemArenaAllocation {
@@ -120,7 +116,7 @@ static void* DnMemArena_Alloc(const DnMemAllocator* allocator, u64 size, u64 ali
     // requested size overflows default chunk size. If it does, allocate chunk
     // dedicated only for this allocation and put it in dedicated non-free list.
     u64 minimumChunkSize = DnMemArena_CalcMinChunkSize(size, alignment);
-    bool oversizedChonk = minimumChunkSize > arena->chunkSize || size > DnMemArena_LargeSizeThreshold;
+    bool oversizedChonk = minimumChunkSize > arena->chunkSize || size > DnMem_LargeSizeThreshold;
 
     // Allocate new chunk address space.
     u64 chunkSize = oversizedChonk ? minimumChunkSize : arena->chunkSize;

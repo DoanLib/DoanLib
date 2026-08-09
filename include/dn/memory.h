@@ -72,6 +72,9 @@ constexpr u64 DnMem_ReservationGranularity = DN_MEM_KB(64);
 // the effective granularity of memory allocations and deallocations.
 constexpr u64 DnMem_SystemPageSize = DN_MEM_KB(4);
 
+// Common threshold size for large allocations.
+constexpr u64 DnMem_LargeSizeThreshold = DN_MEM_KB(128);
+
 // Debugging memory fill patterns.
 #if DN_MEM_PATTERNS_ENABLED
   // Pattern used to fill new memory after allocation.
@@ -96,24 +99,49 @@ bool DnMem_Init();
 // memory leaks).
 void DnMem_Deinit();
 
+// == MEMORY VIRTUAL ======================================================== //
+
+// Reserves virtual address space of the given size without committing. The size
+// is rounded up to a multiple of system page size. Returns the base address of
+// the reserved region, or null if the reservation failed. Reserved memory
+// cannot be accessed until it is committed via DnMemVirtual_Commit().
+void* DnMemVirtual_Reserve(u64 size);
+
+// Commits previously reserved region, making the specified range usable. The
+// page address and size are expected to align with the system page size. Null
+// page address can be specified to automatically reserve address space using
+// single syscall.
+void* DnMemVirtual_Commit(void* page, u64 size);
+
+// Decommits previously committed region, releasing the backing memory (either
+// physical or on disk) while keeping the address space reserved. The page
+// address and size are expected to align with the system page size. The memory
+// region may be recommitted later via DnMemVirtual_Commit().
+void DnMemVirtual_Decommit(void* page, u64 size);
+
+// Releases an entire region of virtual address space that was previously
+// reserved, freeing both the reservation and any committed memory. The page
+// address must be the base address returned by the original reservation.
+void DnMemVirtual_Release(void* page);
+
+// Returns the size of the virtual memory region starting at the given page
+// address, or 0 if the page address is invalid.
+u64 DnMemVirtual_QuerySize(void* page);
+
 // == MEMORY ALLOCATION ====================================================== //
 
-// Shorthand macro for allocating memory from an allocator with a given size and
-// alignment.
+// Shorthand macro for allocating memory from an allocator.
 #define DN_MEM_ALLOC(allocator, size, alignment) ({ \
     const DnMemAllocator* _allocator = allocator; \
     _allocator->alloc(_allocator, size, alignment); \
   })
 
-// Shorthand macro for reallocating memory from an allocator with a given size
-// and alignment. Accepts a null allocation pointer, in which case a new memory
-// block is allocated. Similarly, passing a zero size will result in
-// deallocation routine being called instead. Returns a pointer to a memory
-// block that may have been shrunk or expanded in-place, or to a new memory
-// block if the existing one could not be resized. In the latter case, the
-// original block's contents are copied to the new block before the original is
-// freed. You should always assume that pointers to the reallocated memory are
-// invalidated.
+// Shorthand macro for reallocating memory from an allocator. When null
+// allocation is passed, a new memory block is allocated. When zero size is
+// passed, the memory block is freed. Returns a pointer to a memory block that
+// may have been shrunk or expanded in-place, or to a new memory block with
+// content copied into it if the existing one could not be resized. You should
+// always assume that pointers to the reallocated memory are invalidated.
 #define DN_MEM_REALLOC(allocator, allocation, size, alignment) ({ \
     const DnMemAllocator* _allocator = allocator; \
     _allocator->realloc(_allocator, allocation, size, alignment); \
@@ -125,27 +153,17 @@ void DnMem_Deinit();
     _allocator->free(_allocator, allocation); \
   })
 
-// Shorthand macro for allocating memory from an allocator for a single instance
-// of a given type.
-#define DN_MEM_ALLOC_TYPE(allocator, type) ({ \
-    const DnMemAllocator* _allocator = allocator; \
-    (type*)_allocator->alloc(_allocator, sizeof(type), alignof(type)); \
-  })
+// Shorthand macro for allocating type instance from an allocator.
+#define DN_MEM_ALLOC_TYPE(allocator, type) \
+  DN_MEM_ALLOC(allocator, sizeof(type), alignof(type))
 
-// Shorthand macro for allocating memory from an allocator for an array of a
-// given type and element count.
-#define DN_MEM_ALLOC_TYPES(allocator, type, count) ({ \
-    const DnMemAllocator* _allocator = allocator; \
-    (type*)_allocator->alloc(_allocator, sizeof(type) * (count), alignof(type)); \
-  })
+// Shorthand macro for allocating array of types from an allocator.
+#define DN_MEM_ALLOC_TYPES(allocator, type, count) \
+  DN_MEM_ALLOC(allocator, sizeof(type) * (count), alignof(type))
 
-// Shorthand macro for reallocating memory from an allocator for an array of a
-// given type and element count. See DN_MEM_REALLOC() for additional remarks on
-// reallocation.
-#define DN_MEM_REALLOC_TYPES(allocator, allocation, type, count) ({ \
-    const DnMemAllocator* _allocator = allocator; \
-    (type*)_allocator->realloc(_allocator, allocation, sizeof(type) * (count), alignof(type)); \
-  })
+// Shorthand macro for reallocating array of types from an allocator.
+#define DN_MEM_REALLOC_TYPES(allocator, allocation, type, count) \
+  DN_MEM_REALLOC(allocator, allocation, sizeof(type) * (count), alignof(type))
 
 // == MEMORY ALLOCATOR ====================================================== //
 
@@ -173,49 +191,10 @@ typedef struct DnMemAllocator {
 // when there are no specialized allocators available for given purpose.
 const DnMemAllocator* DnMemAllocator_GetDefault();
 
-// == MEMORY MALLOC ========================================================= //
-
-// Standard C library malloc memory allocator. Should be avoided when possible
-// in favor of custom solutions provided by this library. May have uses as
-// debugging allocator for analyzing memory usage or finding bugs using third
-// party tools.
+// Standard C library malloc memory allocator. Should be used only when
+// interfacing with external libraries or when paired with memory debugging
+// tools such as Valgrin or ASAN.
 const DnMemAllocator* DnMemMalloc_GetAllocator();
-
-// == MEMORY VIRTUAL ======================================================== //
-
-// Reserves a region of virtual address space of the given size without
-// committing any physical memory to it. The size is rounded up to a multiple of
-// the system page size. Returns the base address of the reserved region, or
-// null if the reservation failed. Reserved memory cannot be accessed until it
-// is committed via DnMemVirtual_Commit().
-void* DnMemVirtual_Reserve(u64 size);
-
-// Commits physical memory to a previously reserved region, making the specified
-// range accessible for use. The page address and size are expected to align
-// with the system page size. Null page address can be specified to
-// automatically reserve address space in single system call, which may be
-// faster than calling DnMemVirtual_Reserve() separately.
-void* DnMemVirtual_Commit(void* page, u64 size);
-
-// Decommits physical memory from a previously committed region, releasing the
-// backing physical memory while keeping the address space reserved. The page
-// address and size are expected to align with the system page size. The memory
-// may be recommitted later via DnMemVirtual_Commit().
-void DnMemVirtual_Decommit(void* page, u64 size);
-
-// Releases an entire region of virtual address space that was previously
-// reserved, freeing both the reservation and any committed physical memory. The
-// page address must be the base address returned by the original reservation.
-void DnMemVirtual_Release(void* page);
-
-// Returns the size of the virtual memory region starting at the given page
-// address, or 0 if the page address is invalid.
-u64 DnMemVirtual_QuerySize(void* page);
-
-// == MEMORY LARGE ========================================================== //
-
-// Threshold size for large allocations.
-constexpr u64 DnMemLarge_SizeThreshold = DN_MEM_KB(128);
 
 // Large allocator that puts individual allocations into separate dedicated
 // system memory pages for simplicity and lower memory fragmentation.
@@ -236,10 +215,10 @@ typedef struct DnMemArena DnMemArena;
 
 // Allocates a new memory arena with the given chunk size. The arena will
 // allocate memory in chunks of the specified size (which will be rounded up to
-// next system page size). This size indicates address space usage for each
-// chunk and will not reflect actual physical memory usage. The size should be a
-// balance between too high value resulting in pressure on address space and too
-// low value resulting in frequent chunk allocations.
+// next system page size). This size indicates virtual address space usage for
+// each chunk and will not reflect actual physical memory usage. The size should
+// be a balance between too high value resulting in pressure on address space
+// and too low value resulting in frequent chunk allocations.
 DnMemArena* DnMemArena_Create(u64 chunkSize);
 
 // Destroys an arena instance, freeing all allocations associated with it.
